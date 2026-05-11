@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lune Bijoux – Trang Sức Cao Cấp</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--gold:#C8A96E;--gold-light:#E8D5B0;--gold-dark:#9A7A45;--dark:#0F0E0C;--dark2:#1A1916;--dark3:#252320;--cream:#F5F0E8;--cream2:#EDE7DA;--text:#2A2620;--text-muted:#7A7060;--white:#FFFFFF}
+html{scroll-behavior:smooth}
+body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--text);overflow-x:hidden}
+nav{position:fixed;top:0;width:100%;z-index:1000;background:rgba(15,14,12,0.95);backdrop-filter:blur(12px);border-bottom:1px solid rgba(200,169,110,0.2);padding:0 4rem}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:300;color:var(--gold);letter-spacing:0.15em;text-decoration:none}
+.logo span{font-style:italic}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.8rem;letter-spacing:0.12em;text-transform:uppercase;transition:color 0.3s}
+.nav-links a:hover{color:var(--gold)}
+.nav-actions{display:flex;align-items:center;gap:1.5rem}
+.nav-icon{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.75);font-size:1.1rem;transition:color 0.3s;position:relative}
+.nav-icon:hover{color:var(--gold)}
+.cart-badge{position:absolute;top:-6px;right:-6px;background:var(--gold);color:var(--dark);font-size:0.6rem;width:16px;height:16px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:500}
+.btn-contact{background:transparent;border:1px solid rgba(200,169,110,0.5);color:var(--gold);padding:0.5rem 1.2rem;font-family:'Jost',sans-serif;font-size:0.75rem;letter-spacing:0.1em;cursor:pointer;transition:all 0.3s}
+.btn-contact:hover{background:var(--gold);color:var(--dark)}
+.hero{height:100vh;background:linear-gradient(135deg,var(--dark) 0%,var(--dark2) 50%,#1C1808 100%);display:flex;align-items:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;opacity:0.6}
+.hero-content{position:relative;z-index:2;padding:0 8rem;max-width:1400px;margin:0 auto;width:100%}
+.hero-label{font-size:0.7rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem}
+.hero-label::before{content:'';width:40px;height:1px;background:var(--gold)}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:5.5rem;font-weight:300;color:var(--white);line-height:1.05;margin-bottom:1.5rem}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero p{font-size:1rem;color:rgba(255,255,255,0.6);max-width:420px;line-height:1.8;margin-bottom:3rem;font-weight:300}
+.hero-btns{display:flex;gap:1.5rem;align-items:center}
+.btn-primary{background:var(--gold);color:var(--dark);padding:1rem 2.5rem;border:none;font-family:'Jost',sans-serif;font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-block}
+.btn-primary:hover{background:var(--gold-dark);transform:translateY(-2px)}
+.btn-outline{background:transparent;color:var(--white);padding:1rem 2.5rem;border:1px solid rgba(255,255,255,0.3);font-family:'Jost',sans-serif;font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;text-decoration:none;display:inline-block}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.marquee-bar{background:var(--gold);padding:0.75rem 0;overflow:hidden}
+.marquee-inner{display:flex;animation:marquee 20s linear infinite;white-space:nowrap}
+.marquee-inner span{padding:0 3rem;font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--dark);font-weight:500}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.section-label{font-size:0.65rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem}
+.section-title{font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;line-height:1.2;margin-bottom:0.5rem}
+.section-title em{font-style:italic;color:var(--gold-dark)}
+.categories-section{background:var(--dark);padding:6rem 8rem}
+.cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin-top:4rem}
+.cat-card{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:3/4}
+.cat-card-bg{position:absolute;inset:0;transition:transform 0.6s ease}
+.cat-card:hover .cat-card-bg{transform:scale(1.05)}
+.cat-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:3rem;opacity:0.15;transition:opacity 0.3s}
+.cat-card:hover .cat-icon{opacity:0.3}
+.cat-content{position:absolute;bottom:0;left:0;right:0;padding:2rem;background:linear-gradient(transparent,rgba(0,0,0,0.85))}
+.cat-name{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:300;color:var(--white);margin-bottom:0.3rem}
+.cat-count{font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);opacity:0.8}
+.cat-line{width:0;height:1px;background:var(--gold);transition:width 0.4s ease;margin-top:0.8rem}
+.cat-card:hover .cat-line{width:40px}
+.products-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:4rem}
+.filter-tabs{display:flex;gap:0;border:1px solid rgba(200,169,110,0.3)}
+.filter-tab{padding:0.6rem 1.4rem;font-size:0.72rem;letter-spacing:0.12em;text-transform:uppercase;background:transparent;border:none;cursor:pointer;color:var(--text-muted);transition:all 0.3s;font-family:'Jost',sans-serif}
+.filter-tab.active{background:var(--gold);color:var(--dark)}
+.filter-tab:hover:not(.active){background:rgba(200,169,110,0.1);color:var(--text)}
+.products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:2rem}
+.product-card{cursor:pointer;transition:transform 0.3s}
+.product-card:hover{transform:translateY(-4px)}
+.product-img{position:relative;aspect-ratio:3/4;background:var(--cream2);overflow:hidden;margin-bottom:1.2rem}
+.product-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease}
+.product-card:hover .product-img img{transform:scale(1.08)}
+.product-img-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:4rem;opacity:0.3}
+.product-badge{position:absolute;top:1rem;left:1rem;background:var(--gold);color:var(--dark);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.3rem 0.8rem;font-weight:500}
+.product-actions{position:absolute;bottom:-3rem;left:0;right:0;display:flex;transition:bottom 0.3s ease}
+.product-card:hover .product-actions{bottom:0}
+.product-action-btn{flex:1;padding:0.8rem;background:rgba(15,14,12,0.9);color:var(--white);border:none;cursor:pointer;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;font-family:'Jost',sans-serif;transition:background 0.2s}
+.product-action-btn:hover{background:var(--gold);color:var(--dark)}
+.product-name{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-weight:400;margin-bottom:0.3rem}
+.product-material{font-size:0.72rem;color:var(--text-muted);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem}
+.product-price{display:flex;align-items:center;gap:0.8rem}
+.price-current{font-size:1rem;font-weight:500;color:var(--gold-dark)}
+.price-old{font-size:0.85rem;color:var(--text-muted);text-decoration:line-through}
+.stars{color:var(--gold);font-size:0.7rem;margin-bottom:0.4rem}
+.loading-state{grid-column:1/-1;text-align:center;padding:4rem;color:var(--text-muted)}
+.loading-spinner{width:40px;height:40px;border:2px solid rgba(200,169,110,0.2);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{grid-column:1/-1;text-align:center;padding:4rem}
+.empty-icon{font-size:3rem;opacity:0.2;margin-bottom:1rem}
+.empty-text{font-size:0.85rem;color:var(--text-muted);line-height:1.8}
+.error-state{grid-column:1/-1;text-align:center;padding:3rem;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15)}
+.error-text{font-size:0.9rem;color:#dc2626;margin-bottom:0.8rem;font-weight:500}
+.error-hint{font-size:0.78rem;color:var(--text-muted);line-height:1.7}
+.banner-section{background:var(--dark2);padding:5rem 8rem;display:flex;gap:2px}
+.banner-half{flex:1;padding:4rem;position:relative;overflow:hidden;cursor:pointer;transition:flex 0.4s ease}
+.banner-half:hover{flex:1.2}
+.banner-half h3{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--white);margin-bottom:1rem}
+.banner-half p{font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:2rem}
+.banner-icon{font-size:5rem;opacity:0.08;position:absolute;right:2rem;top:50%;transform:translateY(-50%)}
+.news-section{background:var(--dark);padding:7rem 8rem}
+.news-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem;margin-top:4rem}
+.news-card{position:relative;cursor:pointer;overflow:hidden}
+.news-video-wrap{aspect-ratio:16/9;background:var(--dark3);position:relative;margin-bottom:1.2rem;overflow:hidden}
+.news-thumb{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;opacity:0.2;transition:transform 0.4s}
+.news-card:hover .news-thumb{transform:scale(1.1)}
+.play-btn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:52px;height:52px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--dark);transition:transform 0.3s}
+.news-card:hover .play-btn{transform:translate(-50%,-50%) scale(1.1)}
+.news-tag{font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem}
+.news-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--white);font-weight:300;line-height:1.4;margin-bottom:0.5rem}
+.news-date{font-size:0.72rem;color:rgba(255,255,255,0.35)}
+.news-featured{grid-column:1/3;display:grid;grid-template-columns:1.2fr 1fr;gap:2rem;background:var(--dark3)}
+.news-featured .news-video-wrap{margin-bottom:0;height:100%;min-height:280px}
+.news-featured-content{padding:2.5rem 2rem}
+.news-featured .news-title{font-size:1.8rem}
+.testimonials{background:var(--cream2);padding:6rem 8rem;text-align:center}
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:4rem}
+.testi-card{background:var(--white);padding:2.5rem;position:relative}
+.testi-card::before{content:'"';font-family:'Cormorant Garamond',serif;font-size:5rem;color:var(--gold);opacity:0.3;position:absolute;top:0.5rem;left:1.5rem;line-height:1}
+.testi-text{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.05rem;line-height:1.7;color:var(--text);margin-bottom:1.5rem}
+.testi-author{font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--text-muted)}
+.testi-stars{color:var(--gold);font-size:0.8rem;margin-bottom:0.8rem}
+.social-section{background:var(--dark2);padding:5rem 8rem;text-align:center}
+.social-links{display:flex;justify-content:center;gap:1.5rem;flex-wrap:wrap;margin-top:2rem}
+.social-btn{display:flex;align-items:center;gap:0.8rem;padding:1rem 2rem;border:1px solid rgba(200,169,110,0.3);color:var(--white);text-decoration:none;font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;transition:all 0.3s;font-family:'Jost',sans-serif}
+.social-btn:hover{border-color:var(--gold);background:rgba(200,169,110,0.1)}
+.social-btn svg{width:20px;height:20px;fill:currentColor}
+footer{background:var(--dark);padding:4rem 8rem 2rem;border-top:1px solid rgba(200,169,110,0.15)}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:4rem;margin-bottom:3rem}
+.footer-brand p{font-size:0.82rem;color:rgba(255,255,255,0.4);line-height:1.9;margin-top:1.2rem;font-weight:300}
+.footer-heading{font-size:0.68rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:0.7rem}
+.footer-links a{text-decoration:none;color:rgba(255,255,255,0.45);font-size:0.82rem;transition:color 0.2s;font-weight:300}
+.footer-links a:hover{color:var(--gold)}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:2rem;display:flex;justify-content:space-between;align-items:center}
+.footer-copy{font-size:0.72rem;color:rgba(255,255,255,0.25)}
+.footer-admin-link{font-size:0.68rem;color:rgba(200,169,110,0.4);text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;transition:color 0.2s}
+.footer-admin-link:hover{color:var(--gold)}
+.chat-fab{position:fixed;bottom:2rem;right:2rem;z-index:999;width:56px;height:56px;background:var(--gold);border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.4rem;box-shadow:0 4px 20px rgba(200,169,110,0.4);transition:transform 0.3s;color:var(--dark)}
+.chat-fab:hover{transform:scale(1.08)}
+.chat-window{position:fixed;bottom:5.5rem;right:2rem;width:340px;background:var(--dark2);border:1px solid rgba(200,169,110,0.2);border-radius:4px;z-index:998;display:none;flex-direction:column;height:480px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.chat-window.open{display:flex}
+.chat-header{background:var(--dark3);padding:1.2rem 1.5rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(200,169,110,0.15)}
+.chat-header-info{display:flex;align-items:center;gap:0.8rem}
+.chat-avatar{width:36px;height:36px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--dark);font-weight:600}
+.chat-header-text h4{font-size:0.85rem;color:var(--white);font-weight:500;margin-bottom:2px}
+.chat-header-text p{font-size:0.68rem;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px}
+.online-dot{width:6px;height:6px;background:#4CAF50;border-radius:50%;display:inline-block}
+.chat-close{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.4);font-size:1.1rem}
+.chat-messages{flex:1;overflow-y:auto;padding:1.2rem;display:flex;flex-direction:column;gap:0.8rem}
+.chat-messages::-webkit-scrollbar{width:3px}
+.chat-messages::-webkit-scrollbar-thumb{background:rgba(200,169,110,0.3);border-radius:2px}
+.msg{max-width:80%;padding:0.7rem 1rem;font-size:0.82rem;line-height:1.5}
+.msg-bot{background:var(--dark3);color:rgba(255,255,255,0.85);align-self:flex-start;border-radius:0 8px 8px 8px;border:1px solid rgba(200,169,110,0.1)}
+.msg-user{background:var(--gold);color:var(--dark);align-self:flex-end;border-radius:8px 0 8px 8px;font-weight:500}
+.msg-time{font-size:0.6rem;color:rgba(255,255,255,0.25);margin-top:0.3rem;align-self:flex-start}
+.msg-time.right{align-self:flex-end}
+.quick-replies{display:flex;flex-wrap:wrap;gap:0.4rem;padding:0 1.2rem}
+.quick-reply{background:transparent;border:1px solid rgba(200,169,110,0.3);color:var(--gold);padding:0.35rem 0.8rem;font-size:0.72rem;cursor:pointer;border-radius:20px;font-family:'Jost',sans-serif;transition:all 0.2s}
+.quick-reply:hover{background:var(--gold);color:var(--dark)}
+.chat-input-area{padding:1rem 1.2rem;border-top:1px solid rgba(200,169,110,0.15);display:flex;gap:0.5rem}
+.chat-input{flex:1;background:var(--dark3);border:1px solid rgba(200,169,110,0.2);color:var(--white);padding:0.65rem 1rem;font-size:0.82rem;font-family:'Jost',sans-serif;outline:none;border-radius:2px}
+.chat-input::placeholder{color:rgba(255,255,255,0.25)}
+.chat-input:focus{border-color:rgba(200,169,110,0.5)}
+.chat-send{background:var(--gold);border:none;color:var(--dark);padding:0.65rem 1rem;cursor:pointer;font-size:0.9rem;border-radius:2px}
+.float-social{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:997;display:flex;flex-direction:column;gap:1px}
+.float-btn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;text-decoration:none;transition:width 0.3s;overflow:hidden}
+.float-btn:hover{width:130px}
+.float-btn span{font-size:0.62rem;letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap;opacity:0;transition:opacity 0.2s;padding-left:6px;font-family:'Jost',sans-serif}
+.float-btn:hover span{opacity:1}
+.float-fb{background:#1877F2;color:#fff}
+.float-zalo{background:#0068FF;color:#fff}
+.float-ig{background:#E1306C;color:#fff}
+.float-phone{background:var(--gold-dark);color:#fff}
+.float-btn svg{width:18px;height:18px;fill:currentColor;flex-shrink:0}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:2000;align-items:center;justify-content:center}
+.modal.open{display:flex}
+.modal-inner{background:var(--dark2);width:800px;max-width:95vw}
+.modal-header{display:flex;justify-content:space-between;align-items:center;padding:1.5rem 2rem;border-bottom:1px solid rgba(200,169,110,0.15)}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--white)}
+.modal-close{background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.5rem;cursor:pointer}
+.modal-video{aspect-ratio:16/9;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:5rem;opacity:0.3}
+.modal-desc{padding:1.5rem 2rem;font-size:0.85rem;color:rgba(255,255,255,0.5);line-height:1.7}
+.cart-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1500}
+.cart-overlay.open{display:block}
+.cart-sidebar{position:fixed;right:-420px;top:0;bottom:0;width:420px;background:var(--dark2);z-index:1501;transition:right 0.4s ease;padding:2rem;display:flex;flex-direction:column}
+.cart-sidebar.open{right:0}
+.cart-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:2rem}
+.cart-heading{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--white)}
+.cart-close-btn{background:none;border:none;color:rgba(255,255,255,0.5);font-size:1.5rem;cursor:pointer}
+.cart-items{flex:1;overflow-y:auto}
+.cart-item{display:grid;grid-template-columns:70px 1fr auto;gap:1rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.08);align-items:center}
+.cart-item-img{aspect-ratio:1;background:var(--dark3);display:flex;align-items:center;justify-content:center;font-size:1.8rem;overflow:hidden}
+.cart-item-img img{width:100%;height:100%;object-fit:cover}
+.cart-item-name{font-size:0.85rem;color:var(--white);margin-bottom:0.3rem}
+.cart-item-price{font-size:0.85rem;color:var(--gold)}
+.cart-remove{background:none;border:none;cursor:pointer;color:rgba(255,255,255,0.3);font-size:1rem}
+.cart-remove:hover{color:#E24B4A}
+.cart-footer{border-top:1px solid rgba(200,169,110,0.2);padding-top:1.5rem;margin-top:1rem}
+.cart-total{display:flex;justify-content:space-between;margin-bottom:1.5rem}
+.cart-total-label{font-size:0.8rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5)}
+.cart-total-amount{font-size:1.2rem;color:var(--gold);font-weight:500}
+.btn-checkout{width:100%;background:var(--gold);border:none;color:var(--dark);padding:1.2rem;font-family:'Jost',sans-serif;font-size:0.8rem;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer}
+.toast{position:fixed;top:5rem;right:2rem;background:var(--dark2);border:1px solid rgba(200,169,110,0.3);border-left:3px solid var(--gold);padding:1rem 1.5rem;color:var(--white);font-size:0.82rem;z-index:3000;transform:translateX(110%);transition:transform 0.4s ease;max-width:280px}
+.toast.show{transform:translateX(0)}
+.api-status{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);background:var(--dark2);border:1px solid rgba(200,169,110,0.2);padding:0.5rem 1.2rem;font-size:0.68rem;color:rgba(255,255,255,0.5);letter-spacing:0.08em;z-index:100;display:flex;align-items:center;gap:0.5rem;transition:opacity 0.5s;border-radius:20px}
+.api-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;flex-shrink:0}
+.api-dot.loading{background:var(--gold);animation:spin 0.8s linear infinite}
+.api-dot.error{background:#EF4444}
+@keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<script>
+  // =====================================================
+  // ⚙ CẤU HÌNH – SAU KHI CÓ URL APPS SCRIPT, DÁN VÀO ĐÂY
+  // =====================================================
+  const SHEET_API_URL = "https://script.google.com/macros/s/AKfycbz6FGdQ29yBPwqwgSCERsnrrZgJSCHWKiNbqChSdWN04s5-oApk8asw2ohGNQgX8Kpu/exec";
+  const SHEET_ID = "1p06q122xnH9YDgR_f49KUKvyW3szPSVzAjHtP1C6HIA";
+</script>
+
+<div class="float-social">
+  <a class="float-btn float-fb" href="https://facebook.com" target="_blank"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg><span>Facebook</span></a>
+  <a class="float-btn float-zalo" href="https://zalo.me" target="_blank"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg><span>Zalo</span></a>
+  <a class="float-btn float-ig" href="https://instagram.com" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg><span>Instagram</span></a>
+  <a class="float-btn float-phone" href="tel:0987654321"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg><span>0987 654 321</span></a>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="logo"><span>Lune</span> Bijoux</a>
+    <ul class="nav-links">
+      <li><a href="#collections">Bộ Sưu Tập</a></li>
+      <li><a href="#products">Sản Phẩm</a></li>
+      <li><a href="#news">Tin Tức</a></li>
+      <li><a href="#contact">Liên Hệ</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="nav-icon" onclick="showToast('Tính năng tìm kiếm đang phát triển...')">🔍</button>
+      <button class="nav-icon" onclick="toggleCart()">🛒<span class="cart-badge" id="cartCount">0</span></button>
+      <button class="btn-contact" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">Tư Vấn</button>
+    </div>
+  </div>
+</nav>
+
+<section class="hero" id="home">
+  <div class="hero-content">
+    <div class="hero-label">Bộ Sưu Tập 2025</div>
+    <h1>Vẻ Đẹp<br><em>Vĩnh Cửu</em><br>Trong Từng<br>Chi Tiết</h1>
+    <p>Trang sức cao cấp được chế tác thủ công từ vàng 18K và đá quý tự nhiên, mang đến vẻ đẹp tinh tế cho mọi khoảnh khắc đặc biệt.</p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-primary">Khám Phá Ngay</a>
+      <a href="#collections" class="btn-outline">Xem Bộ Sưu Tập</a>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-bar"><div class="marquee-inner"><span>✦ Vàng 18K Cao Cấp</span><span>✦ Kim Cương Tự Nhiên</span><span>✦ Chế Tác Thủ Công</span><span>✦ Bảo Hành Trọn Đời</span><span>✦ Giao Hàng Toàn Quốc</span><span>✦ Đổi Trả 30 Ngày</span><span>✦ Vàng 18K Cao Cấp</span><span>✦ Kim Cương Tự Nhiên</span><span>✦ Chế Tác Thủ Công</span><span>✦ Bảo Hành Trọn Đời</span><span>✦ Giao Hàng Toàn Quốc</span><span>✦ Đổi Trả 30 Ngày</span></div></div>
+
+<section class="categories-section" id="collections">
+  <div style="max-width:1400px;margin:0 auto">
+    <div class="section-label" style="color:var(--gold)">Danh Mục</div>
+    <div class="section-title" style="color:var(--white)">Khám Phá <em>Bộ Sưu Tập</em></div>
+    <div class="cat-grid">
+      <div class="cat-card" onclick="jumpFilter('nhan')"><div class="cat-card-bg" style="background:linear-gradient(135deg,#1A1916,#2A2318)"></div><div class="cat-icon">💍</div><div class="cat-content"><div class="cat-name">Nhẫn</div><div class="cat-count" id="count-nhan">-- Sản Phẩm</div><div class="cat-line"></div></div></div>
+      <div class="cat-card" onclick="jumpFilter('vong')"><div class="cat-card-bg" style="background:linear-gradient(135deg,#1A1810,#24200A)"></div><div class="cat-icon">⌚</div><div class="cat-content"><div class="cat-name">Vòng Tay</div><div class="cat-count" id="count-vong">-- Sản Phẩm</div><div class="cat-line"></div></div></div>
+      <div class="cat-card" onclick="jumpFilter('day_chuyen')"><div class="cat-card-bg" style="background:linear-gradient(135deg,#181018,#201520)"></div><div class="cat-icon">📿</div><div class="cat-content"><div class="cat-name">Dây Chuyền</div><div class="cat-count" id="count-day_chuyen">-- Sản Phẩm</div><div class="cat-line"></div></div></div>
+      <div class="cat-card" onclick="jumpFilter('hoa_tai')"><div class="cat-card-bg" style="background:linear-gradient(135deg,#101818,#0A1E1E)"></div><div class="cat-icon">✨</div><div class="cat-content"><div class="cat-name">Hoa Tai</div><div class="cat-count" id="count-hoa_tai">-- Sản Phẩm</div><div class="cat-line"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="products" style="background:var(--cream);padding:7rem 8rem">
+  <div style="max-width:1400px;margin:0 auto">
+    <div class="products-header">
+      <div>
+        <div class="section-label">Trực Tiếp Từ Google Sheet</div>
+        <div class="section-title" style="color:var(--text)">Sản Phẩm <em>Của Bạn</em></div>
+      </div>
+      <div style="display:flex;gap:0.8rem;align-items:center">
+        <div class="filter-tabs">
+          <button class="filter-tab active" onclick="setFilter(this,'all')">Tất Cả</button>
+          <button class="filter-tab" onclick="setFilter(this,'nhan')">Nhẫn</button>
+          <button class="filter-tab" onclick="setFilter(this,'vong')">Vòng Tay</button>
+          <button class="filter-tab" onclick="setFilter(this,'day_chuyen')">Dây Chuyền</button>
+          <button class="filter-tab" onclick="setFilter(this,'hoa_tai')">Hoa Tai</button>
+        </div>
+        <button onclick="loadProducts()" style="background:none;border:1px solid rgba(200,169,110,0.3);color:var(--gold-dark);padding:0.6rem 1rem;font-family:'Jost',sans-serif;font-size:0.72rem;cursor:pointer;transition:all 0.2s" title="Tải lại từ Sheet">🔄</button>
+      </div>
+    </div>
+    <div class="products-grid" id="productsGrid">
+      <div class="loading-state"><div class="loading-spinner"></div><div>Đang tải sản phẩm từ Google Sheet...</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="banner-section">
+  <div class="banner-half" style="background:var(--dark3)"><div class="banner-icon">💎</div><div class="section-label" style="color:var(--gold)">Ưu Đãi</div><h3>Miễn Phí<br>Khắc Tên</h3><p>Khắc tên hoặc ngày đặc biệt miễn phí cho tất cả nhẫn và vòng tay</p><a href="#" class="btn-primary" style="font-size:0.72rem">Đăng Ký Ngay</a></div>
+  <div class="banner-half" style="background:#1A150A"><div class="banner-icon">👑</div><div class="section-label" style="color:var(--gold)">Thành Viên VIP</div><h3>Tích Điểm<br>Nhận Quà</h3><p>Chương trình thành viên VIP – tích điểm với mỗi đơn hàng</p><a href="#" class="btn-outline" style="font-size:0.72rem">Tham Gia VIP</a></div>
+</div>
+
+<section class="news-section" id="news">
+  <div style="max-width:1400px;margin:0 auto">
+    <div><div class="section-label" style="color:var(--gold)">Tin Tức & Video</div><div class="section-title" style="color:var(--white)">Khám Phá <em>Thế Giới</em> Trang Sức</div></div>
+    <div class="news-grid">
+      <div class="news-card news-featured" onclick="openModal('Bộ Sưu Tập Mùa Hè 2025','Những thiết kế lấy cảm hứng từ ánh nắng và sóng biển.')"><div class="news-video-wrap"><div class="news-thumb">🎬</div><div class="play-btn">▶</div><div style="position:absolute;top:1rem;left:1rem;background:var(--gold);color:var(--dark);font-size:0.6rem;padding:0.3rem 0.7rem;font-weight:600">VIDEO NỔI BẬT</div></div><div class="news-featured-content"><div class="news-tag">Bộ Sưu Tập Mới</div><div class="news-title" style="font-size:1.8rem">Bộ Sưu Tập Mùa Hè 2025</div><p style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0.8rem 0 1.2rem;line-height:1.7">Thiết kế lấy cảm hứng từ ánh nắng và làn sóng biển, chế tác từ vàng 18K và sapphire xanh.</p><div class="news-date">10 Tháng 5, 2025</div></div></div>
+      <div class="news-card" onclick="openModal('Nghệ Thuật Chế Tác Kim Hoàn','Hành trình từ vàng thô đến tác phẩm tinh xảo.')"><div class="news-video-wrap"><div class="news-thumb">🔨</div><div class="play-btn">▶</div></div><div class="news-tag">Hậu Trường</div><div class="news-title">Nghệ Thuật Chế Tác Kim Hoàn Truyền Thống</div><div class="news-date">05 Tháng 5, 2025</div></div>
+      <div class="news-card" onclick="openModal('Bí Quyết Phối Trang Sức','Bí quyết phối trang sức chuẩn fashion.')"><div class="news-video-wrap"><div class="news-thumb">✨</div><div class="play-btn">▶</div></div><div class="news-tag">Phong Cách</div><div class="news-title">Bí Quyết Phối Trang Sức Chuẩn Fashion</div><div class="news-date">01 Tháng 5, 2025</div></div>
+      <div class="news-card" onclick="openModal('Kim Cương','Hướng dẫn chọn kim cương theo 4C.')"><div class="news-video-wrap"><div class="news-thumb">💎</div><div class="play-btn">▶</div></div><div class="news-tag">Kiến Thức</div><div class="news-title">Kim Cương & Những Điều Bạn Chưa Biết</div><div class="news-date">28 Tháng 4, 2025</div></div>
+      <div class="news-card" onclick="openModal('Top 10 Nhẫn Cưới','Những mẫu nhẫn cưới được chọn nhiều nhất 2025.')"><div class="news-video-wrap"><div class="news-thumb">💍</div><div class="play-btn">▶</div></div><div class="news-tag">Đám Cưới</div><div class="news-title">Top 10 Nhẫn Cưới Được Chọn Nhiều Nhất 2025</div><div class="news-date">22 Tháng 4, 2025</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials">
+  <div style="max-width:1400px;margin:0 auto">
+    <div class="section-label">Khách Hàng Nói Gì</div>
+    <div class="section-title" style="color:var(--text)">Những <em>Cảm Nhận</em> Thật</div>
+    <div class="testi-grid">
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">Chiếc nhẫn kim cương tôi mua cho vợ nhân ngày cưới thật sự tuyệt vời. Chất lượng vượt trội và nhân viên rất tận tình.</p><div class="testi-author">Nguyễn Minh Tuấn – Hà Nội</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">Mẫu dây chuyền vàng 18K đúng như hình, thậm chí còn đẹp hơn khi nhìn trực tiếp. Giao hàng nhanh, bảo hành rõ ràng.</p><div class="testi-author">Trần Thị Mai – TP.HCM</div></div>
+      <div class="testi-card"><div class="testi-stars">★★★★★</div><p class="testi-text">Đặt nhẫn đính hôn theo yêu cầu riêng, được tư vấn rất kỹ. Sản phẩm hoàn thiện đúng như ý muốn, người yêu rất thích.</p><div class="testi-author">Lê Hoàng Long – Đà Nẵng</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="social-section" id="contact">
+  <div style="max-width:1400px;margin:0 auto">
+    <div class="section-label" style="color:var(--gold)">Kết Nối Với Chúng Tôi</div>
+    <div style="font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--white);margin-bottom:0.8rem">Theo Dõi & Cập Nhật <em style="font-style:italic;color:var(--gold)">Ưu Đãi Hàng Ngày</em></div>
+    <div style="font-size:0.85rem;color:rgba(255,255,255,0.5);margin-bottom:2rem">Theo dõi Lune Bijoux trên các nền tảng để không bỏ lỡ bộ sưu tập mới</div>
+    <div class="social-links">
+      <a href="https://zalo.me" target="_blank" class="social-btn" style="border-color:rgba(0,104,255,0.4);color:#4A90E2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>Zalo OA</a>
+      <a href="https://facebook.com" target="_blank" class="social-btn" style="border-color:rgba(24,119,242,0.4);color:#4F90E2"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>Facebook Page</a>
+      <a href="https://instagram.com" target="_blank" class="social-btn" style="border-color:rgba(225,48,108,0.4);color:#E2845A"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4z"/></svg>Instagram</a>
+      <a href="https://tiktok.com" target="_blank" class="social-btn" style="border-color:rgba(255,255,255,0.2);color:rgba(255,255,255,0.7)"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.34 6.34 0 00-6.33 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.17 8.17 0 004.77 1.52V6.75a4.85 4.85 0 01-1-.06z"/></svg>TikTok</a>
+    </div>
+    <div style="margin-top:4rem;padding-top:3rem;border-top:1px solid rgba(200,169,110,0.15);display:grid;grid-template-columns:repeat(3,1fr);gap:3rem;text-align:center">
+      <div><div style="font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:var(--gold)">10+</div><div style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:0.3rem">Năm Kinh Nghiệm</div></div>
+      <div><div style="font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:var(--gold)">5000+</div><div style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:0.3rem">Khách Hàng Hài Lòng</div></div>
+      <div><div style="font-family:'Cormorant Garamond',serif;font-size:3rem;font-weight:300;color:var(--gold)" id="productCountStat">--</div><div style="font-size:0.75rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:0.3rem">Sản Phẩm</div></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div style="max-width:1400px;margin:0 auto">
+    <div class="footer-grid">
+      <div class="footer-brand"><div class="logo" style="font-size:1.5rem">Lune <span>Bijoux</span></div><p>Trang sức cao cấp chế tác thủ công, sử dụng vàng 18K và đá quý thiên nhiên. Mang đến vẻ đẹp tinh tế và giá trị bền vững.</p></div>
+      <div><div class="footer-heading">Sản Phẩm</div><ul class="footer-links"><li><a href="#">Nhẫn Kim Cương</a></li><li><a href="#">Dây Chuyền Vàng</a></li><li><a href="#">Vòng Tay</a></li><li><a href="#">Hoa Tai</a></li><li><a href="#">Bộ Trang Sức</a></li></ul></div>
+      <div><div class="footer-heading">Hỗ Trợ</div><ul class="footer-links"><li><a href="#">Hướng Dẫn Mua Hàng</a></li><li><a href="#">Chính Sách Đổi Trả</a></li><li><a href="#">Bảo Hành</a></li><li><a href="#">Câu Hỏi Thường Gặp</a></li></ul></div>
+      <div><div class="footer-heading">Liên Hệ</div><ul class="footer-links"><li><a href="#">📍 12 Hàng Bạc, Hà Nội</a></li><li><a href="tel:0987654321">📞 0987 654 321</a></li><li><a href="#">✉ hello@lunebijoux.vn</a></li><li><a href="#">🕐 T2–T7: 8:00–20:00</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Lune Bijoux. Bảo lưu mọi quyền.</div>
+      <a href="admin.html" class="footer-admin-link">⚙ Quản Trị</a>
+    </div>
+  </div>
+</footer>
+
+<div class="modal" id="videoModal" onclick="closeModal(event)">
+  <div class="modal-inner" onclick="event.stopPropagation()">
+    <div class="modal-header"><div class="modal-title" id="modalTitle"></div><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-video">🎬</div>
+    <div class="modal-desc" id="modalDesc"></div>
+  </div>
+</div>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-top"><div class="cart-heading">Giỏ Hàng</div><button class="cart-close-btn" onclick="toggleCart()">✕</button></div>
+  <div class="cart-items" id="cartItems"><div style="text-align:center;padding:3rem;color:rgba(255,255,255,0.3)"><div style="font-size:3rem;margin-bottom:1rem">🛒</div><div style="font-size:0.82rem">Giỏ hàng đang trống</div></div></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span class="cart-total-label">Tổng Cộng</span><span class="cart-total-amount" id="cartTotal">0₫</span></div>
+    <button class="btn-checkout" onclick="showToast('Đang chuyển đến thanh toán...')">Thanh Toán Ngay</button>
+  </div>
+</div>
+
+<button class="chat-fab" onclick="toggleChat()">💬</button>
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header"><div class="chat-header-info"><div class="chat-avatar">LB</div><div class="chat-header-text"><h4>Lune Bijoux Hỗ Trợ</h4><p><span class="online-dot"></span> Trực tuyến</p></div></div><button class="chat-close" onclick="toggleChat()">✕</button></div>
+  <div class="chat-messages" id="chatMessages"><div class="msg msg-bot">Xin chào! Tôi là trợ lý của Lune Bijoux 💎 Bạn cần hỗ trợ gì?</div><div class="msg-time">Vừa xong</div></div>
+  <div class="quick-replies"><button class="quick-reply" onclick="sendQuick('Xem sản phẩm mới')">🆕 Sản phẩm mới</button><button class="quick-reply" onclick="sendQuick('Tư vấn nhẫn cưới')">💍 Nhẫn cưới</button><button class="quick-reply" onclick="sendQuick('Chính sách đổi trả')">🔄 Đổi trả</button><button class="quick-reply" onclick="sendQuick('Liên hệ nhân viên')">👤 Nhân viên</button></div>
+  <div class="chat-input-area"><input type="text" class="chat-input" id="chatInput" placeholder="Nhập tin nhắn..." onkeypress="if(event.key==='Enter')sendMessage()"><button class="chat-send" onclick="sendMessage()">➤</button></div>
+</div>
+
+<div class="api-status" id="apiStatus"><div class="api-dot loading" id="apiDot"></div><span id="apiText">Đang kết nối Google Sheet...</span></div>
+<div class="toast" id="toast"></div>
+
+<script>
+let allProducts=[], cart=[], currentFilter='all';
+const catEmoji={nhan:'💍',vong:'⌚',day_chuyen:'📿',hoa_tai:'✨'};
+
+async function loadProducts(){
+  setStatus('loading','Đang tải từ Google Sheet...');
+  document.getElementById('productsGrid').innerHTML='<div class="loading-state"><div class="loading-spinner"></div><div>Đang tải sản phẩm...</div></div>';
+  try{
+    const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Trang%20t%C3%ADnh1`;
+    const res=await fetch(url);
+    const text=await res.text();
+    const json=JSON.parse(text.substring(47,text.length-2));
+    const cols=json.table.cols.map(c=>c.label);
+    allProducts=(json.table.rows||[]).map(row=>{
+      const o={};
+      cols.forEach((c,i)=>{o[c]=row.c[i]?row.c[i].v:'';});
+      return o;
+    }).filter(p=>p['tên']);
+    renderProducts(currentFilter);
+    updateCounts();
+    const n=allProducts.length;
+    setStatus('ok',`✓ Đã tải ${n} sản phẩm từ Google Sheet của bạn`);
+    document.getElementById('productCountStat').textContent=n+'+';
+  }catch(e){
+    document.getElementById('productsGrid').innerHTML='<div class="error-state"><div class="error-text">⚠ Không thể kết nối Google Sheet</div><div class="error-hint">Bạn cần vào Google Sheet → Share → Anyone with the link → Viewer<br>rồi bấm nút 🔄 để thử lại</div></div>';
+    setStatus('error','✗ Lỗi kết nối – kiểm tra quyền chia sẻ Sheet');
+  }
+}
+
+function renderProducts(filter){
+  const grid=document.getElementById('productsGrid');
+  const list=filter==='all'?allProducts:allProducts.filter(p=>(p['danh_muc']||'').toLowerCase().trim()===filter);
+  if(!list.length){grid.innerHTML='<div class="empty-state"><div class="empty-icon">'+(catEmoji[filter]||'🔍')+'</div><div class="empty-text">Chưa có sản phẩm nào.<br>Hãy thêm vào Google Sheet!</div></div>';return;}
+  grid.innerHTML=list.map((p,i)=>{
+    const ten=p['tên']||'Sản phẩm';
+    const gia=parseInt(p['giá'])||0;
+    const giaCu=parseInt(p['gia_cu'])||0;
+    const moTa=p['mo_ta']||'';
+    const anh=p['anh']||'';
+    const badge=p['badge']||'';
+    const cat=(p['danh_muc']||'nhan').toLowerCase().trim();
+    const emoji=catEmoji[cat]||'💎';
+    const hasImg=anh&&anh!=='https://...';
+    return `<div class="product-card" style="animation:fadeIn 0.4s ease ${i*0.07}s both">
+      <div class="product-img">
+        ${hasImg?`<img src="${anh}" alt="${ten}" onerror="this.style.display='none';this.nextSibling.style.display='flex'">`:''}
+        <div class="product-img-placeholder" style="${hasImg?'display:none':''}">${emoji}</div>
+        ${badge?`<div class="product-badge">${badge}</div>`:''}
+        <div class="product-actions">
+          <button class="product-action-btn" onclick="addToCart(${i},'${filter}')">🛒 Thêm Giỏ</button>
+          <button class="product-action-btn" onclick="showToast('Đã lưu vào yêu thích ❤')">♡ Yêu Thích</button>
+        </div>
+      </div>
+      <div class="stars">★★★★★</div>
+      <div class="product-name">${ten}</div>
+      <div class="product-material">${moTa.substring(0,45)}${moTa.length>45?'...':''}</div>
+      <div class="product-price">
+        <span class="price-current">${fmt(gia)}</span>
+        ${giaCu>gia?`<span class="price-old">${fmt(giaCu)}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateCounts(){
+  ['nhan','vong','day_chuyen','hoa_tai'].forEach(c=>{
+    const el=document.getElementById('count-'+c);
+    if(el){const n=allProducts.filter(p=>(p['danh_muc']||'').toLowerCase().trim()===c).length;el.textContent=n+' Sản Phẩm';}
+  });
+}
+
+function setFilter(btn,f){document.querySelectorAll('.filter-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');currentFilter=f;renderProducts(f);}
+function jumpFilter(f){document.getElementById('products').scrollIntoView({behavior:'smooth'});currentFilter=f;renderProducts(f);}
+
+function fmt(p){return parseInt(p||0).toLocaleString('vi-VN')+'₫';}
+
+function addToCart(idx,filter){
+  const list=filter==='all'?allProducts:allProducts.filter(p=>(p['danh_muc']||'').toLowerCase().trim()===filter);
+  const p=list[idx];if(!p)return;
+  const ex=cart.find(x=>x.ten===p['tên']);
+  if(ex)ex.qty++;else cart.push({ten:p['tên'],gia:parseInt(p['giá'])||0,anh:p['anh']||'',cat:(p['danh_muc']||'nhan').toLowerCase(),qty:1});
+  updateCartUI();showToast(`Đã thêm "${p['tên']}" 🛒`);
+}
+
+function removeFromCart(ten){cart=cart.filter(x=>x.ten!==ten);updateCartUI();}
+
+function updateCartUI(){
+  const count=cart.reduce((a,b)=>a+b.qty,0);
+  document.getElementById('cartCount').textContent=count;
+  document.getElementById('cartTotal').textContent=fmt(cart.reduce((a,b)=>a+b.gia*b.qty,0));
+  const el=document.getElementById('cartItems');
+  if(!cart.length){el.innerHTML='<div style="text-align:center;padding:3rem;color:rgba(255,255,255,0.3)"><div style="font-size:3rem;margin-bottom:1rem">🛒</div><div style="font-size:0.82rem">Giỏ hàng đang trống</div></div>';return;}
+  el.innerHTML=cart.map(item=>{
+    const emoji=catEmoji[item.cat]||'💎';
+    const hasImg=item.anh&&item.anh!=='https://...';
+    return `<div class="cart-item">
+      <div class="cart-item-img">${hasImg?`<img src="${item.anh}" style="width:100%;height:100%;object-fit:cover">`:emoji}</div>
+      <div><div class="cart-item-name">${item.ten}</div><div class="cart-item-price">${fmt(item.gia)} × ${item.qty}</div></div>
+      <button class="cart-remove" onclick="removeFromCart('${item.ten.replace(/'/g,"\\'")}')">✕</button>
+    </div>`;
+  }).join('');
+}
+
+function toggleCart(){document.getElementById('cartSidebar').classList.toggle('open');document.getElementById('cartOverlay').classList.toggle('open');}
+
+const chatResp={'nhẫn cưới':'Lune Bijoux có hơn 50 mẫu nhẫn cưới giá từ 5 triệu đến 200 triệu. Bạn muốn xem mẫu nào?','đổi trả':'Đổi trả miễn phí 30 ngày nếu sản phẩm lỗi. Bảo hành vàng và đá quý trọn đời!','giá':'Trang sức từ 1.5 triệu (bạc 925) đến hàng trăm triệu (kim cương). Bạn có mức giá dự kiến chưa?','nhân viên':'Liên hệ ngay:\n📞 0987 654 321\n💬 Zalo: 0987 654 321\n✉ hello@lunebijoux.vn'};
+const defResp=['Cảm ơn bạn! Bạn có thể mô tả thêm nhu cầu không?','Tôi hiểu rồi! Đây là dịp tặng quà hay dùng cá nhân?'];
+
+function toggleChat(){document.getElementById('chatWindow').classList.toggle('open');}
+function sendQuick(t){document.getElementById('chatInput').value=t;sendMessage();}
+function sendMessage(){
+  const inp=document.getElementById('chatInput');
+  const msg=inp.value.trim();if(!msg)return;
+  appendMsg(msg,'user');inp.value='';
+  setTimeout(()=>{
+    const lower=msg.toLowerCase();
+    let resp=defResp[Math.floor(Math.random()*defResp.length)];
+    for(const k in chatResp){if(lower.includes(k)){resp=chatResp[k];break;}}
+    appendMsg(resp,'bot');
+  },600+Math.random()*400);
+}
+function appendMsg(text,type){
+  const msgs=document.getElementById('chatMessages');
+  const d=document.createElement('div');d.className=`msg msg-${type}`;d.textContent=text;msgs.appendChild(d);
+  const t=document.createElement('div');t.className=`msg-time${type==='user'?' right':''}`;t.textContent='Vừa xong';msgs.appendChild(t);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function openModal(title,desc){document.getElementById('modalTitle').textContent=title;document.getElementById('modalDesc').textContent=desc;document.getElementById('videoModal').classList.add('open');document.body.style.overflow='hidden';}
+function closeModal(e){if(!e||e.target===document.getElementById('videoModal')){document.getElementById('videoModal').classList.remove('open');document.body.style.overflow='';}}
+
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3000);}
+
+function setStatus(type,msg){
+  const dot=document.getElementById('apiDot');
+  const text=document.getElementById('apiText');
+  const status=document.getElementById('apiStatus');
+  dot.className='api-dot'+(type==='loading'?' loading':type==='error'?' error':'');
+  text.textContent=msg;
+  if(type!=='loading')setTimeout(()=>{status.style.opacity='0';setTimeout(()=>status.style.display='none',500);},5000);
+}
+
+loadProducts();
+</script>
+</body>
+</html>
