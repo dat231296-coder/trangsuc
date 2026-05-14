@@ -141,7 +141,7 @@ tr:last-child td{border-bottom:none}
 <body>
 
 <script>
-  const API = "hhttps://script.google.com/macros/s/AKfycbwl2jDi6Fy_TN35gi7dS0pN1GQXzh1gVQaN8VgqA-LvixOPGt1SE_aT0v9J8rTZTM-Y/exec";
+  const API = "https://script.google.com/macros/s/AKfycbxf_hQuVtZP4Vs-OjnM8EJVErUh71CPGnEnjYKxi4nxtqyxJfMZ1mrHwqpHihC8AZ93/exec";
 </script>
 
 <!-- SIDEBAR -->
@@ -455,7 +455,11 @@ tr:last-child td{border-bottom:none}
         </div>
       </div>
       <div class="fg" id="vidUrlGrp"><label class="fl">URL Video (YouTube / TikTok)</label><input class="fi" id="p-url_video" placeholder="https://youtube.com/watch?v=..."></div>
-      <div class="fg"><label class="fl">Mô Tả Ngắn</label><textarea class="fta" id="p-mo_ta" placeholder="Khám phá bộ sưu tập..."></textarea></div>
+      <div class="fg"><label class="fl">Mô Tả Ngắn (hiện ngoài danh sách)</label><textarea class="fta" id="p-mo_ta" placeholder="Khám phá bộ sưu tập..."></textarea></div>
+      <div class="fg"><label class="fl">Nội Dung Bài Viết Đầy Đủ</label>
+        <div style="font-size:0.62rem;color:var(--di);margin-bottom:5px">Hỗ trợ HTML: &lt;h2&gt;, &lt;h3&gt;, &lt;p&gt;, &lt;blockquote&gt;, &lt;ul&gt;&lt;li&gt;. Để trống nếu là video.</div>
+        <textarea class="fta" id="p-noi_dung" style="min-height:160px;font-family:var(--font-mono,monospace);font-size:0.72rem" placeholder="&lt;h2&gt;Tiêu đề phần&lt;/h2&gt;&#10;&lt;p&gt;Nội dung đoạn văn...&lt;/p&gt;&#10;&lt;blockquote&gt;Trích dẫn nổi bật&lt;/blockquote&gt;"></textarea>
+      </div>
       <div class="fr">
         <div class="fg"><label class="fl">Link Ảnh Thumbnail</label><input class="fi" id="p-anh_dai_dien" placeholder="https://i.ibb.co/..."></div>
         <div class="fg"><label class="fl">Ngày Đăng</label><input class="fi" id="p-ngay_dang" type="date"></div>
@@ -533,7 +537,7 @@ function go(id, el) {
 async function loadAll() {
   toast('Đang đồng bộ...');
   try {
-    const r = await fetch(API);
+    const r = await fetch(API + '?action=get_all');
     const d = await r.json();
     P  = d.products || [];
     O  = d.orders   || [];
@@ -552,8 +556,30 @@ async function loadAll() {
 }
 
 async function callAPI(body) {
-  await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),mode:'no-cors'});
-  return true;
+  // Apps Script không hỗ trợ POST JSON → dùng GET + URL params
+  const params = flattenParams(body);
+  const url = API + '?' + new URLSearchParams(params).toString();
+  const res = await fetch(url);
+  const data = await res.json();
+  return data;
+}
+
+function flattenParams(obj, prefix) {
+  const params = {};
+  Object.keys(obj).forEach(k => {
+    const val = obj[k];
+    if (val !== null && val !== undefined) {
+      if (typeof val === 'object' && !Array.isArray(val)) {
+        // Nested object (data) → flatten 1 cấp
+        Object.keys(val).forEach(k2 => { params[k2] = val[k2] ?? ''; });
+      } else if (Array.isArray(val)) {
+        params[k] = JSON.stringify(val);
+      } else {
+        params[k] = val;
+      }
+    }
+  });
+  return params;
 }
 
 // ═══════════════════════════════════════════
@@ -697,7 +723,7 @@ function renderPosts() {
 function openPostModal() {
   document.getElementById('mPostTitle').textContent='Đăng Bài Viết / Video';
   document.getElementById('postRow').value='';
-  ['tieu_de','url_video','mo_ta','anh_dai_dien'].forEach(k=>document.getElementById('p-'+k).value='');
+  ['tieu_de','url_video','mo_ta','noi_dung','anh_dai_dien'].forEach(k=>document.getElementById('p-'+k).value='');
   document.getElementById('p-loai').value='video';
   document.getElementById('p-chuyen_muc').value='Bo Suu Tap Moi';
   document.getElementById('p-ngay_dang').value=new Date().toISOString().split('T')[0];
@@ -713,6 +739,7 @@ function editPost(i) {
   document.getElementById('p-loai').value=p.loai||'video';
   document.getElementById('p-url_video').value=p.url_video||'';
   document.getElementById('p-mo_ta').value=p.mo_ta||'';
+  document.getElementById('p-noi_dung').value=p.noi_dung||'';
   document.getElementById('p-anh_dai_dien').value=p.anh_dai_dien||'';
   document.getElementById('p-chuyen_muc').value=p.chuyen_muc||'Bo Suu Tap Moi';
   document.getElementById('p-ngay_dang').value=p.ngay_dang||'';
@@ -725,7 +752,7 @@ async function savePost() {
   if (!tieu_de) { toast('Nhập tiêu đề!','er'); return; }
   const btn=document.getElementById('btnSavePost');
   btn.innerHTML='<span class="ld"></span>Đang đăng...'; btn.disabled=true;
-  const data={tieu_de,loai:document.getElementById('p-loai').value,url_video:document.getElementById('p-url_video').value.trim(),mo_ta:document.getElementById('p-mo_ta').value.trim(),anh_dai_dien:document.getElementById('p-anh_dai_dien').value.trim(),chuyen_muc:document.getElementById('p-chuyen_muc').value,ngay_dang:document.getElementById('p-ngay_dang').value};
+  const data={tieu_de,loai:document.getElementById('p-loai').value,url_video:document.getElementById('p-url_video').value.trim(),mo_ta:document.getElementById('p-mo_ta').value.trim(),noi_dung:document.getElementById('p-noi_dung').value.trim(),anh_dai_dien:document.getElementById('p-anh_dai_dien').value.trim(),chuyen_muc:document.getElementById('p-chuyen_muc').value,ngay_dang:document.getElementById('p-ngay_dang').value};
   const row=document.getElementById('postRow').value;
   await callAPI(row?{action:'edit_post',row:Number(row),data}:{action:'add_post',data});
   toast(row?'✓ Đã cập nhật!':'✓ Đã đăng bài!','ok');
@@ -897,3 +924,70 @@ loadAll();
 </script>
 </body>
 </html>
+<style>
+/* ═══ RESPONSIVE ADMIN ═══ */
+@media (max-width:1024px){
+  :root{--sw:200px}
+  .content{padding:1.2rem}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .charts-row,.form-grid,.fr{grid-template-columns:1fr}
+  table{font-size:0.72rem}
+  th,td{padding:0.6rem 0.7rem}
+}
+
+@media (max-width:768px){
+  /* SIDEBAR → BOTTOM NAV */
+  .sb{width:100%;height:auto;position:fixed;bottom:0;top:auto;left:0;right:0;flex-direction:row;z-index:200;border-right:none;border-top:1px solid var(--bd);overflow-x:auto;overflow-y:hidden}
+  .sb-logo,.sg-lbl,.sb-ft{display:none}
+  .sb-nav{display:flex;flex-direction:row;padding:0;flex:1;overflow-x:auto}
+  .sg{display:flex;flex-direction:row;margin:0}
+  .ni{flex-direction:column;padding:0.6rem 0.8rem;font-size:0.55rem;letter-spacing:0.04em;gap:3px;min-width:60px;border-left:none;border-top:2px solid transparent;text-align:center;white-space:nowrap}
+  .ni.active{border-left:none;border-top-color:var(--gold)}
+  .ni .ico{font-size:1.1rem;width:auto}
+  .ni .nb{position:absolute;top:4px;right:4px;width:14px;height:14px;padding:0;display:flex;align-items:center;justify-content:center}
+
+  /* MAIN */
+  .main{margin-left:0;margin-bottom:70px}
+  .topbar{padding:0 1rem;height:52px}
+  .pg-ttl{font-size:0.85rem}
+  .pg-bc{display:none}
+  .tb-r .btn:not(.p){display:none}
+  .content{padding:1rem}
+
+  /* STATS */
+  .stats{grid-template-columns:1fr 1fr;gap:0.7rem}
+  .stat-v{font-size:1.3rem}
+
+  /* TABLE */
+  .tw{overflow-x:auto}
+  table{min-width:600px}
+  .th{flex-direction:column;align-items:flex-start;gap:0.5rem}
+  .th .btn.p{width:100%;justify-content:center;padding:0.6rem}
+
+  /* MODAL */
+  .modal{width:95vw;max-height:90vh}
+  .mb{padding:1rem}
+  .fr{grid-template-columns:1fr}
+
+  /* FORMS */
+  .sb-box{padding:1rem}
+  .kw-row{grid-template-columns:1fr;gap:0.4rem}
+
+  /* CHARTS */
+  .card{padding:1rem}
+  .bars{height:50px}
+
+  /* DASHBOARD GRID */
+  #panel-dashboard>div:nth-child(2){grid-template-columns:1fr!important}
+  #panel-dashboard>div:nth-child(3){grid-template-columns:1fr!important}
+}
+
+@media (max-width:480px){
+  .stats{grid-template-columns:1fr 1fr}
+  .stat{padding:0.9rem}
+  .stat-v{font-size:1.15rem}
+  .stat-l{font-size:0.55rem}
+  .ni{padding:0.5rem 0.6rem;font-size:0.5rem;min-width:50px}
+  .search-bar input{min-width:120px}
+}
+</style>
