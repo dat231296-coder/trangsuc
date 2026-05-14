@@ -257,7 +257,7 @@ footer{background:var(--dark);padding:3.8rem 8rem 1.8rem;border-top:1px solid rg
 
 <script>
   /* ═══ CẤU HÌNH ═══ */
-  const API      = "https://script.google.com/macros/s/AKfycbz6FGdQ29yBPwqwgSCERsnrrZgJSCHWKiNbqChSdWN04s5-oApk8asw2ohGNQgX8Kpu/exec";
+  const API      = "https://script.google.com/macros/s/AKfycbxf_hQuVtZP4Vs-OjnM8EJVErUh71CPGnEnjYKxi4nxtqyxJfMZ1mrHwqpHihC8AZ93/exec";
   const SHEET_ID = "1p06q122xnH9YDgR_f49KUKvyW3szPSVzAjHtP1C6HIA";
 </script>
 
@@ -506,7 +506,7 @@ async function loadData() {
 
     // Thử load bài viết từ API
     try {
-      const r2=await fetch(API);
+      const r2=await fetch(API + '?action=get_all');
       const d2=await r2.json();
       if(d2.posts&&d2.posts.length) { allPosts=d2.posts; renderNews(); }
       if(d2.chatbot&&d2.chatbot.length) allCB=d2.chatbot;
@@ -706,20 +706,18 @@ async function submitOrder(){
   const tongTien=cart.reduce((a,b)=>a+b.gia*b.qty,0);
 
   try {
-    await fetch(API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        action:'add_order',
-        data:{
-          ten_khach:name, sdt, dia_chi:addr,
-          san_pham:sanPham, so_luong:cart.reduce((a,b)=>a+b.qty,0),
-          tong_tien:tongTien,
-          ghi_chu:(document.getElementById('o-note')||{}).value||''
-        }
-      }),
-      mode:'no-cors'
+    const params = new URLSearchParams({
+      action:     'add_order',
+      ten_khach:  name,
+      sdt,
+      dia_chi:    addr,
+      san_pham:   sanPham,
+      so_luong:   cart.reduce((a,b)=>a+b.qty,0),
+      tong_tien:  tongTien,
+      ghi_chu:    (document.getElementById('o-note')||{}).value||''
     });
+    const res  = await fetch(API + '?' + params.toString());
+    const data = await res.json();
 
     // Hiển thị thành công
     document.getElementById('ordContent').innerHTML=`
@@ -790,3 +788,161 @@ loadData();
 </script>
 </body>
 </html>
+<style>
+/* ═══════════════════════════════════════
+   RESPONSIVE – MOBILE FIRST
+   Breakpoints: 768px (tablet), 480px (phone)
+════════════════════════════════════════ */
+@media (max-width:1024px){
+  nav{padding:0 2rem}
+  .hero-cnt,.cat-sec,.ban-sec,.news-sec,.testi-sec,.soc-sec,footer,#products{padding-left:2rem;padding-right:2rem}
+  .ft-grid{grid-template-columns:1fr 1fr;gap:2rem}
+  .prd-grid{grid-template-columns:repeat(3,1fr)}
+  .hero h1{font-size:4rem}
+  .cat-grid{grid-template-columns:repeat(2,1fr)}
+  .testi-grid{grid-template-columns:1fr 1fr}
+  .news-grid{grid-template-columns:1fr 1fr}
+  .news-feat{grid-column:1/3;grid-template-columns:1fr}
+  .news-feat .news-vw{min-height:220px}
+}
+
+@media (max-width:768px){
+  /* NAV */
+  nav{padding:0 1.2rem}
+  .nav-links{display:none}
+  .nav-in{height:60px}
+  .logo{font-size:1.4rem}
+
+  /* HAMBURGER */
+  .ham{display:flex;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px}
+  .ham span{display:block;width:22px;height:2px;background:rgba(255,255,255,0.7);transition:all 0.3s}
+  .mobile-menu{display:none;position:fixed;top:60px;left:0;right:0;background:rgba(15,14,12,0.98);backdrop-filter:blur(12px);z-index:999;padding:1.5rem;flex-direction:column;gap:0;border-bottom:1px solid rgba(200,169,110,0.2)}
+  .mobile-menu.open{display:flex}
+  .mobile-menu a{color:rgba(255,255,255,0.75);text-decoration:none;font-size:0.9rem;letter-spacing:0.1em;text-transform:uppercase;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.07);transition:color 0.2s}
+  .mobile-menu a:hover{color:var(--gold)}
+
+  /* HERO */
+  .hero-cnt{padding:0 1.4rem}
+  .hero h1{font-size:2.8rem;line-height:1.1}
+  .hero p{font-size:0.85rem;margin-bottom:2rem}
+  .hero-btns{flex-direction:column;align-items:flex-start;gap:0.9rem}
+  .btn-p,.btn-o{padding:0.85rem 2rem;font-size:0.75rem;width:100%;text-align:center}
+
+  /* SECTIONS PADDING */
+  .cat-sec,.news-sec,section,.testi-sec,.soc-sec{padding-left:1.2rem;padding-right:1.2rem;padding-top:3.5rem;padding-bottom:3.5rem}
+  #products{padding:3.5rem 1.2rem}
+  .ban-sec{padding:0;flex-direction:column}
+  footer{padding:3rem 1.2rem 1.5rem}
+
+  /* CATEGORIES */
+  .cat-grid{grid-template-columns:repeat(2,1fr);gap:1px}
+  .cat-sec{padding-top:3rem}
+
+  /* PRODUCTS */
+  .prd-grid{grid-template-columns:repeat(2,1fr);gap:1rem}
+  .prd-hdr{flex-direction:column;align-items:flex-start;gap:1.2rem;margin-bottom:2rem}
+  .filter-tabs{flex-wrap:wrap;width:100%}
+  .f-tab{flex:1;min-width:calc(50% - 1px);text-align:center}
+  .prd-nm{font-size:0.95rem}
+  .sec-ttl{font-size:2.2rem}
+
+  /* BANNER */
+  .ban-h{padding:2.5rem 1.4rem}
+  .ban-h h3{font-size:1.7rem}
+  .ban-ico{display:none}
+
+  /* NEWS */
+  .news-grid{grid-template-columns:1fr;gap:1.5rem}
+  .news-feat{grid-column:1/2;grid-template-columns:1fr}
+  .news-feat .news-vw{min-height:200px}
+  .news-feat-cnt{padding:1.4rem}
+  .news-feat .news-ttl{font-size:1.35rem}
+
+  /* TESTIMONIALS */
+  .testi-grid{grid-template-columns:1fr;gap:1.2rem}
+
+  /* SOCIAL */
+  .soc-links{gap:0.7rem}
+  .soc-btn{padding:0.75rem 1.1rem;font-size:0.72rem}
+  .soc-ttl{font-size:1.8rem}
+  .soc-sec>div>div:last-child{grid-template-columns:1fr}
+
+  /* FOOTER */
+  .ft-grid{grid-template-columns:1fr;gap:1.8rem}
+  .ft-btm{flex-direction:column;gap:0.8rem;text-align:center}
+
+  /* FLOAT SOCIAL */
+  .fl-soc{display:none}
+
+  /* CART SIDEBAR */
+  .cart-sb{width:100%;right:-100%}
+
+  /* CHAT */
+  .chat-win{width:calc(100vw - 2rem);right:1rem;bottom:5rem}
+
+  /* ORDER MODAL */
+  .ord-inner{width:95vw;max-height:95vh}
+  .f-row{grid-template-columns:1fr}
+
+  /* VIDEO MODAL */
+  .v-inner{width:95vw}
+
+  /* API STATUS */
+  .api-st{display:none}
+}
+
+@media (max-width:480px){
+  .hero h1{font-size:2.2rem}
+  .prd-grid{grid-template-columns:1fr 1fr;gap:0.8rem}
+  .prd-nm{font-size:0.88rem}
+  .p-cur{font-size:0.85rem}
+  .cat-grid{grid-template-columns:1fr 1fr}
+  .cat-nm{font-size:1.2rem}
+  .sec-ttl{font-size:1.9rem}
+  .mq-in span{padding:0 1.5rem;font-size:0.6rem}
+  .news-ttl{font-size:1rem}
+  .testi-txt{font-size:0.92rem}
+  .soc-btn svg{display:none}
+  .soc-btn{padding:0.65rem 0.9rem}
+}
+</style>
+
+<script>
+// Thêm hamburger menu vào nav nếu chưa có
+(function(){
+  if(document.querySelector('.ham')) return;
+  const acts = document.querySelector('.nav-acts');
+  if(!acts) return;
+  
+  // Tạo hamburger
+  const ham = document.createElement('button');
+  ham.className='ham'; ham.setAttribute('aria-label','Menu');
+  ham.innerHTML='<span></span><span></span><span></span>';
+  acts.insertBefore(ham, acts.firstChild);
+
+  // Tạo mobile menu
+  const menu = document.createElement('div');
+  menu.className='mobile-menu';
+  menu.innerHTML=`
+    <a href="index.html">Trang Chủ</a>
+    <a href="#collections" onclick="menu.classList.remove('open')">Bộ Sưu Tập</a>
+    <a href="#products" onclick="menu.classList.remove('open')">Sản Phẩm</a>
+    <a href="baiviet.html">Tin Tức & Video</a>
+    <a href="#contact" onclick="menu.classList.remove('open')">Liên Hệ</a>
+    <a href="tel:0987654321" style="color:var(--gold)">📞 0987 654 321</a>
+  `;
+  document.querySelector('nav').appendChild(menu);
+
+  ham.addEventListener('click', function(){
+    menu.classList.toggle('open');
+    ham.querySelectorAll('span')[0].style.transform = menu.classList.contains('open')?'rotate(45deg) translate(5px,5px)':'';
+    ham.querySelectorAll('span')[1].style.opacity   = menu.classList.contains('open')?'0':'1';
+    ham.querySelectorAll('span')[2].style.transform = menu.classList.contains('open')?'rotate(-45deg) translate(5px,-5px)':'';
+  });
+
+  // Đóng menu khi click ra ngoài
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('nav')) menu.classList.remove('open');
+  });
+})();
+</script>
