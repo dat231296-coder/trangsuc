@@ -270,7 +270,7 @@ async function loadPosts(){
   try{
     const res=await fetch(API + '?action=get_all');
     const data=await res.json();
-    if(data.posts&&data.posts.length>0){
+    if(data.status==='ok'&&data.posts&&data.posts.length>0){
       allPosts=data.posts;
     } else {
       allPosts=defaultPosts;
@@ -478,7 +478,14 @@ function showToast(msg){const t=document.getElementById('toast');t.textContent=m
 const style=document.createElement('style');
 style.textContent='@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}';
 document.head.appendChild(style);
-loadPosts();
+loadPosts().then(()=>{
+  // Tự mở bài viết nếu có param ?post= từ index.html
+  const params = new URLSearchParams(window.location.search);
+  const postIdx = params.get('post');
+  if(postIdx !== null && allPosts[parseInt(postIdx)]) {
+    setTimeout(()=>openPost(parseInt(postIdx)), 300);
+  }
+});
 </script>
 </body>
 </html>
