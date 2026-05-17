@@ -257,7 +257,7 @@ footer{background:var(--dark);padding:3.8rem 8rem 1.8rem;border-top:1px solid rg
 
 <script>
   /* ═══ CẤU HÌNH ═══ */
-  const API      = "https://script.google.com/macros/s/AKfycbxf_hQuVtZP4Vs-OjnM8EJVErUh71CPGnEnjYKxi4nxtqyxJfMZ1mrHwqpHihC8AZ93/exec";
+  const API      = "https://script.google.com/macros/s/AKfycbzgyG947y_0sfQdUBlQ5rBgEdI0jhjVn2r1_fqoCgVnU7hAJ64z15TAg7eqJZ0xipPd/exec";
   const SHEET_ID = "1p06q122xnH9YDgR_f49KUKvyW3szPSVzAjHtP1C6HIA";
 </script>
 
@@ -352,6 +352,7 @@ footer{background:var(--dark);padding:3.8rem 8rem 1.8rem;border-top:1px solid rg
   <div style="max-width:1400px;margin:0 auto">
     <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem">
       <div><div class="sec-lbl" style="color:var(--gold)">Tin Tức & Video</div><div class="sec-ttl" style="color:var(--white)">Khám Phá <em>Thế Giới</em> Trang Sức</div></div>
+      <a href="baiviet.html" class="btn-o" style="font-size:0.72rem;padding:0.65rem 1.4rem;white-space:nowrap">Xem Tất Cả →</a>
     </div>
     <div class="news-grid" id="newsGrid">
       <!-- Mặc định nếu Sheet chưa có bài -->
@@ -495,30 +496,49 @@ async function loadData() {
   setApiSt('ld','Đang tải dữ liệu...');
   document.getElementById('prdGrid').innerHTML='<div class="ld-state"><div class="ld-spin"></div><div>Đang tải sản phẩm...</div></div>';
   try {
-    const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Trang%20t%C3%ADnh1`;
-    const res=await fetch(url);
-    const txt=await res.text();
-    const json=JSON.parse(txt.substring(47,txt.length-2));
-    const cols=json.table.cols.map(c=>c.label);
-    allPrd=(json.table.rows||[]).map(row=>{
-      const o={};cols.forEach((c,i)=>{o[c]=row.c[i]?row.c[i].v:'';});return o;
-    }).filter(p=>p['tên']);
+    // Dùng API (Apps Script) làm nguồn chính — đọc cả sản phẩm + bài viết + chatbot 1 lần
+    const res  = await fetch(API + '?action=get_all');
+    const data = await res.json();
 
-    // Thử load bài viết từ API
-    try {
-      const r2=await fetch(API + '?action=get_all');
-      const d2=await r2.json();
-      if(d2.posts&&d2.posts.length) { allPosts=d2.posts; renderNews(); }
-      if(d2.chatbot&&d2.chatbot.length) allCB=d2.chatbot;
-    } catch(e){}
+    if(data.status !== 'ok') throw new Error(data.message||'API error');
+
+    allPrd  = (data.products || []).filter(p => p['tên']);
+    allPosts = data.posts   || [];
+    allCB   = data.chatbot  || [];
 
     renderPrd(curFilter);
     updateCatCounts();
-    document.getElementById('prdCountStat').textContent=allPrd.length+'+';
-    setApiSt('ok','✓ Đã tải '+allPrd.length+' sản phẩm từ Google Sheet');
+    if(allPosts.length) renderNews();
+    document.getElementById('prdCountStat').textContent = allPrd.length + '+';
+    setApiSt('ok', '✓ Đã tải ' + allPrd.length + ' sản phẩm');
   } catch(e) {
-    document.getElementById('prdGrid').innerHTML='<div class="em-state"><div class="em-ico">⚠</div><div class="em-txt">Không thể kết nối Google Sheet.<br>Kiểm tra Sheet đã chia sẻ "Anyone with the link" chưa?</div></div>';
-    setApiSt('er','✗ Lỗi kết nối Google Sheet');
+    // Fallback: thử gviz nếu API lỗi
+    try {
+      const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=Trang%20t%C3%ADnh1`;
+      const res2 = await fetch(url);
+      const txt  = await res2.text();
+      const json = JSON.parse(txt.substring(47, txt.length-2));
+      const cols = json.table.cols.map(c=>c.label);
+      allPrd = (json.table.rows||[]).map(row=>{
+        const o={};cols.forEach((c,i)=>{o[c]=row.c[i]?row.c[i].v:'';});return o;
+      }).filter(p=>p['tên']);
+      renderPrd(curFilter);
+      updateCatCounts();
+      document.getElementById('prdCountStat').textContent = allPrd.length + '+';
+      setApiSt('ok', '✓ Đã tải ' + allPrd.length + ' sản phẩm (fallback)');
+    } catch(e2) {
+      document.getElementById('prdGrid').innerHTML = `
+        <div class="em-state">
+          <div class="em-ico">⚠</div>
+          <div class="em-txt">Không thể kết nối.<br>
+          Kiểm tra lại:<br>
+          1. Apps Script đã Deploy chưa?<br>
+          2. Sheet đã chia sẻ "Anyone with the link"?<br>
+          <button onclick="loadData()" style="margin-top:1rem;padding:0.6rem 1.4rem;background:var(--gold);border:none;color:var(--dark);cursor:pointer;font-family:'Jost',sans-serif;font-size:0.78rem">🔄 Thử Lại</button>
+          </div>
+        </div>`;
+      setApiSt('er', '✗ Lỗi kết nối – thử lại sau');
+    }
   }
 }
 
@@ -580,33 +600,43 @@ function renderNews(){
   const grid=document.getElementById('newsGrid');
   const feat=allPosts[0], rest=allPosts.slice(1,5);
   const ytId=feat.url_video?getYtId(feat.url_video):'';
-  grid.innerHTML=`
-    <div class="news-card news-feat" onclick="openVideo('${esc(feat.tieu_de)}','${esc(feat.mo_ta)}','${feat.url_video||''}')">
-      <div class="news-vw">
-        ${ytId?`<img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" style="width:100%;height:100%;object-fit:cover">`:`<div class="news-th">🎬</div>`}
-        <div class="play-btn">▶</div>
-        <div style="position:absolute;top:0.9rem;left:0.9rem;background:var(--gold);color:var(--dark);font-size:0.58rem;padding:0.28rem 0.65rem;font-weight:600">VIDEO NỔI BẬT</div>
-      </div>
-      <div class="news-feat-cnt">
-        <div class="news-tag">${feat.chuyen_muc||'Bộ Sưu Tập'}</div>
-        <div class="news-ttl" style="font-size:1.7rem">${feat.tieu_de||''}</div>
-        <p style="font-size:0.8rem;color:rgba(255,255,255,0.38);margin:0.7rem 0 1.1rem;line-height:1.7">${(feat.mo_ta||'').substring(0,120)}</p>
-        <div class="news-dt">${feat.ngay_dang||''}</div>
-      </div>
+  const featIco=feat.loai==='video'?'▶':'📖';
+  let html=`<div class="news-card news-feat" onclick="goToPost(0)" style="cursor:pointer">
+    <div class="news-vw">`;
+  if(ytId) html+=`<img src="https://img.youtube.com/vi/${ytId}/hqdefault.jpg" style="width:100%;height:100%;object-fit:cover">`;
+  else html+=`<div class="news-th">🎬</div>`;
+  html+=`<div class="play-btn">${featIco}</div>
+      <div style="position:absolute;top:0.9rem;left:0.9rem;background:var(--gold);color:var(--dark);font-size:0.58rem;padding:0.28rem 0.65rem;font-weight:600">${feat.loai==='video'?'VIDEO NỔI BẬT':'BÀI VIẾT MỚI'}</div>
     </div>
-    ${rest.map(p=>{
-      const ytId2=p.url_video?getYtId(p.url_video):'';
-      return `<div class="news-card" onclick="openVideo('${esc(p.tieu_de)}','${esc(p.mo_ta)}','${p.url_video||''}')">
-        <div class="news-vw">
-          ${ytId2?`<img src="https://img.youtube.com/vi/${ytId2}/hqdefault.jpg" style="width:100%;height:100%;object-fit:cover">`:`<div class="news-th">${p.loai==='video'?'🎬':'📝'}</div>`}
-          <div class="play-btn">▶</div>
-        </div>
-        <div class="news-tag">${p.chuyen_muc||''}</div>
-        <div class="news-ttl">${p.tieu_de||''}</div>
-        <div class="news-dt">${p.ngay_dang||''}</div>
-      </div>`;
-    }).join('')}`;
+    <div class="news-feat-cnt">
+      <div class="news-tag">${feat.chuyen_muc||''}</div>
+      <div class="news-ttl" style="font-size:1.7rem">${feat.tieu_de||''}</div>
+      <p style="font-size:0.8rem;color:rgba(255,255,255,0.38);margin:0.7rem 0 1.1rem;line-height:1.7">${(feat.mo_ta||'').substring(0,120)}...</p>
+      <div class="news-dt">${feat.ngay_dang||''}</div>
+      <div style="margin-top:1rem;font-size:0.72rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase">Xem Chi Tiết →</div>
+    </div>
+  </div>`;
+  rest.forEach(function(p,i){
+    var ytId2=p.url_video?getYtId(p.url_video):'';
+    var ico=p.loai==='video'?'▶':'📖';
+    html+=`<div class="news-card" onclick="goToPost(${i+1})" style="cursor:pointer">
+      <div class="news-vw">`;
+    if(ytId2) html+=`<img src="https://img.youtube.com/vi/${ytId2}/hqdefault.jpg" style="width:100%;height:100%;object-fit:cover">`;
+    else html+=`<div class="news-th">${p.loai==='video'?'🎬':'📝'}</div>`;
+    html+=`<div class="play-btn">${ico}</div>
+      </div>
+      <div class="news-tag">${p.chuyen_muc||''}</div>
+      <div class="news-ttl">${p.tieu_de||''}</div>
+      <div class="news-dt">${p.ngay_dang||''}</div>
+    </div>`;
+  });
+  grid.innerHTML=html;
 }
+
+function goToPost(idx){
+  window.location.href='baiviet.html?post='+idx;
+}
+
 
 function getYtId(url){const m=url.match(/(?:youtu\.be\/|v=|embed\/)([^&\n?#]+)/);return m?m[1]:'';}
 function esc(s){return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
@@ -668,25 +698,23 @@ function openOrder(){
   if(!cart.length){showToast('Giỏ hàng đang trống!');return;}
   toggleCart();
   const total=cart.reduce((a,b)=>a+b.gia*b.qty,0);
+  // Render danh sách sản phẩm
   document.getElementById('ordItems').innerHTML=cart.map(item=>
     `<div class="ord-item-row"><span class="ord-item-nm">${item.ten} × ${item.qty}</span><span class="ord-item-pr">${fmt(item.gia*item.qty)}</span></div>`
   ).join('');
   document.getElementById('ordTotalAmt').textContent=fmt(total);
-  document.getElementById('ordContent').innerHTML=document.getElementById('ordContent').innerHTML;
+  // Reset form fields
+  ['o-name','o-sdt','o-addr','o-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const payEl=document.getElementById('o-pay');if(payEl)payEl.value='cod';
+  const piEl=document.getElementById('payInfo');if(piEl)piEl.style.display='none';
+  const ckEl=document.getElementById('ckContent');if(ckEl)ckEl.textContent='LB + SĐT';
+  const btnEl=document.getElementById('btnOrder');if(btnEl){btnEl.textContent='✅ Đặt Hàng Ngay';btnEl.disabled=false;}
+  // Gắn sự kiện chọn phương thức thanh toán
+  if(payEl) payEl.onchange=function(){
+    if(piEl) piEl.style.display=this.value==='ck'?'block':'none';
+  };
   document.getElementById('ordModal').classList.add('open');
   document.body.style.overflow='hidden';
-
-  // Re-render order items after innerHTML reset
-  setTimeout(()=>{
-    document.getElementById('ordItems').innerHTML=cart.map(item=>
-      `<div class="ord-item-row"><span class="ord-item-nm">${item.ten} × ${item.qty}</span><span class="ord-item-pr">${fmt(item.gia*item.qty)}</span></div>`
-    ).join('');
-    document.getElementById('ordTotalAmt').textContent=fmt(total);
-    document.getElementById('o-pay').onchange=function(){
-      const pi=document.getElementById('payInfo');
-      pi.style.display=this.value==='ck'?'block':'none';
-    };
-  },10);
 }
 
 function closeOrder(){document.getElementById('ordModal').classList.remove('open');document.body.style.overflow='';}
@@ -929,7 +957,7 @@ loadData();
     <a href="#products" onclick="menu.classList.remove('open')">Sản Phẩm</a>
     <a href="baiviet.html">Tin Tức & Video</a>
     <a href="#contact" onclick="menu.classList.remove('open')">Liên Hệ</a>
-    <a href="tel:0987654321" style="color:var(--gold)">📞 0987 654 321</a>
+    <a href="tel:0398138678" style="color:var(--gold)">📞 0398 138 678</a>
   `;
   document.querySelector('nav').appendChild(menu);
 
