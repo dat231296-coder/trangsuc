@@ -141,7 +141,7 @@ tr:last-child td{border-bottom:none}
 <body>
 
 <script>
-  const API = "https://script.google.com/macros/s/AKfycbyqE5pmaVlpllokmIE7WTJPdGI_Xaz1-oLNybU3Ya5tkel_4172NQkJMlMPGwG_rkg/exec";
+  const API = "https://script.google.com/macros/s/AKfycbzgyG947y_0sfQdUBlQ5rBgEdI0jhjVn2r1_fqoCgVnU7hAJ64z15TAg7eqJZ0xipPd/exec";
 </script>
 
 <!-- SIDEBAR -->
@@ -556,30 +556,28 @@ async function loadAll() {
 }
 
 async function callAPI(body) {
-  // Apps Script không hỗ trợ POST JSON → dùng GET + URL params
-  const params = flattenParams(body);
-  const url = API + '?' + new URLSearchParams(params).toString();
-  const res = await fetch(url);
-  const data = await res.json();
-  return data;
-}
-
-function flattenParams(obj, prefix) {
+  // Gộp action + row + data fields thành URL params phẳng
   const params = {};
-  Object.keys(obj).forEach(k => {
-    const val = obj[k];
-    if (val !== null && val !== undefined) {
-      if (typeof val === 'object' && !Array.isArray(val)) {
-        // Nested object (data) → flatten 1 cấp
-        Object.keys(val).forEach(k2 => { params[k2] = val[k2] ?? ''; });
-      } else if (Array.isArray(val)) {
-        params[k] = JSON.stringify(val);
-      } else {
-        params[k] = val;
-      }
+  Object.keys(body).forEach(k => {
+    const val = body[k];
+    if (k === 'data' && typeof val === 'object' && !Array.isArray(val)) {
+      // Flatten data object ra ngoài, nhưng GIỮ action và row
+      Object.keys(val).forEach(k2 => { params[k2] = val[k2] ?? ''; });
+    } else if (Array.isArray(val)) {
+      params[k] = JSON.stringify(val);
+    } else if (val !== null && val !== undefined) {
+      params[k] = val;
     }
   });
-  return params;
+  const url = API + '?' + new URLSearchParams(params).toString();
+  try {
+    const res  = await fetch(url);
+    const data = await res.json();
+    return data;
+  } catch(e) {
+    console.error('callAPI error:', e);
+    return { status:'error', message: e.toString() };
+  }
 }
 
 // ═══════════════════════════════════════════
@@ -690,10 +688,17 @@ async function savePrd() {
   btn.innerHTML='<span class="ld"></span>Đang lưu...'; btn.disabled=true;
   const data={ten,gia:Number(gia),gia_cu:Number(document.getElementById('f-gia_cu').value)||'',danh_muc:document.getElementById('f-danh_muc').value,mo_ta:document.getElementById('f-mo_ta').value.trim(),anh:document.getElementById('f-anh').value.trim(),badge:document.getElementById('f-badge').value};
   const row=document.getElementById('prdRow').value;
-  await callAPI(row?{action:'edit_product',row:Number(row),data}:{action:'add_product',data});
-  toast(row?'✓ Đã cập nhật sản phẩm!':'✓ Đã thêm sản phẩm!','ok');
-  closeOv('ovProduct'); btn.innerHTML='💾 Lưu Sản Phẩm'; btn.disabled=false;
-  setTimeout(loadAll,1300);
+  try {
+    const res=await callAPI(row?{action:'edit_product',row:Number(row),data}:{action:'add_product',data});
+    if(res&&res.status==='ok'){
+      toast(row?'✓ Đã cập nhật sản phẩm!':'✓ Đã thêm sản phẩm!','ok');
+      closeOv('ovProduct');
+      setTimeout(loadAll,1300);
+    } else {
+      toast('Lỗi: '+(res&&res.message||'Không rõ lỗi'),'er');
+    }
+  } catch(e){ toast('Lỗi kết nối: '+e.message,'er'); }
+  btn.innerHTML='💾 Lưu Sản Phẩm'; btn.disabled=false;
 }
 
 async function delPrd(i,row) {
@@ -754,10 +759,17 @@ async function savePost() {
   btn.innerHTML='<span class="ld"></span>Đang đăng...'; btn.disabled=true;
   const data={tieu_de,loai:document.getElementById('p-loai').value,url_video:document.getElementById('p-url_video').value.trim(),mo_ta:document.getElementById('p-mo_ta').value.trim(),noi_dung:document.getElementById('p-noi_dung').value.trim(),anh_dai_dien:document.getElementById('p-anh_dai_dien').value.trim(),chuyen_muc:document.getElementById('p-chuyen_muc').value,ngay_dang:document.getElementById('p-ngay_dang').value};
   const row=document.getElementById('postRow').value;
-  await callAPI(row?{action:'edit_post',row:Number(row),data}:{action:'add_post',data});
-  toast(row?'✓ Đã cập nhật!':'✓ Đã đăng bài!','ok');
-  closeOv('ovPost'); btn.innerHTML='📝 Đăng Bài'; btn.disabled=false;
-  setTimeout(loadAll,1300);
+  try {
+    const res=await callAPI(row?{action:'edit_post',row:Number(row),data}:{action:'add_post',data});
+    if(res&&res.status==='ok'){
+      toast(row?'✓ Đã cập nhật!':'✓ Đã đăng bài!','ok');
+      closeOv('ovPost');
+      setTimeout(loadAll,1300);
+    } else {
+      toast('Lỗi: '+(res&&res.message||'Không rõ'),'er');
+    }
+  } catch(e){ toast('Lỗi kết nối!','er'); }
+  btn.innerHTML='📝 Đăng Bài'; btn.disabled=false;
 }
 
 async function delPost(i,row) {
@@ -826,10 +838,17 @@ async function saveOrder() {
   const btn=document.getElementById('btnSaveOrd');
   btn.innerHTML='<span class="ld"></span>Đang tạo...'; btn.disabled=true;
   const data={ten_khach:ten,sdt,dia_chi:document.getElementById('o-dia_chi').value.trim(),san_pham:document.getElementById('o-san_pham').value,so_luong:Number(document.getElementById('o-so_luong').value)||1,tong_tien:Number(document.getElementById('o-tong_tien').value)||0,ghi_chu:document.getElementById('o-ghi_chu').value.trim()};
-  await callAPI({action:'add_order',data});
-  toast('✓ Đã tạo đơn hàng!','ok');
-  closeOv('ovOrder'); btn.innerHTML='✅ Tạo Đơn Hàng'; btn.disabled=false;
-  setTimeout(loadAll,1300);
+  try {
+    const res=await callAPI({action:'add_order',data});
+    if(res&&res.status==='ok'){
+      toast('✓ '+( res.message||'Đã tạo đơn hàng!'),'ok');
+      closeOv('ovOrder');
+      setTimeout(loadAll,1300);
+    } else {
+      toast('Lỗi: '+(res&&res.message||'Không rõ'),'er');
+    }
+  } catch(e){ toast('Lỗi kết nối!','er'); }
+  btn.innerHTML='✅ Tạo Đơn Hàng'; btn.disabled=false;
 }
 
 async function updateOrderStatus(row,status) {
